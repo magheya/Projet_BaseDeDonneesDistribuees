@@ -1,0 +1,86 @@
+<!-- articles.html -->
+
+<h1>Articles</h1>
+<ul>
+    {% for article in articles %}
+        <li>
+            <h2>{{ article.title }}</h2>
+            <p>{{ article.summary_mongodb }}</p>  
+            <p>By User ID {{ article.user_id }}</p>
+            <form class="comment-form" data-article-id="{{ article.id }}">
+                <textarea name="comment" placeholder="Write your comment"></textarea>
+                <button type="submit">Add Comment</button>
+            </form>
+            <div class="comments-section" data-article-id="{{ article.id }}">
+                <h3>Comments</h3>
+                <ul class="comments-list">
+                    <!-- Comments will be added dynamically here -->
+                </ul>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    // Add event listener for comment submission
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const articleId = this.dataset.articleId;
+            const commentContent = this.querySelector('textarea').value;
+
+            try {
+                const response = await fetch(`/add_comment/${articleId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: commentContent })
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    alert(responseData.message); // Show success message
+                    // Optionally, update the UI to reflect the added comment
+                    fetchComments(articleId); // Fetch and display comments after adding a new comment
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error); // Show error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding the comment.');
+            }
+        });
+    });
+
+    // Function to fetch and display comments for a specific article
+    async function fetchComments(articleId) {
+        try {
+            const response = await fetch(`/get_comments/${articleId}`);
+            if (response.ok) {
+                const commentsData = await response.json();
+                const commentsList = document.querySelector(`.comments-section[data-article-id="${articleId}"] .comments-list`);
+                commentsList.innerHTML = ''; // Clear existing comments
+                commentsData.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.textContent = comment.content;
+                    commentsList.appendChild(li);
+                });
+            } else {
+                alert('Failed to fetch comments for this article.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while fetching comments.');
+        }
+    }
+
+    // Fetch and display comments for each article on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.comments-section').forEach(section => {
+            const articleId = section.dataset.articleId;
+            fetchComments(articleId);
+        });
+    });
+</script>

@@ -1,0 +1,7 @@
+<!-- templates/add_user.html -->
+<form method="POST" action="{{ url_for('main.add_user') }}">
+    Username: <input type="text" name="username"><br>
+    Email: <input type="email" name="email"><br>
+    Password: <input type="password" name="password"><br>
+    <input type="submit" value="Add User">
+</form>

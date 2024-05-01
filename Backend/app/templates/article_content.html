@@ -1,0 +1,25 @@
+<!-- templates/article_content.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ article.title }}</title>
+</head>
+<body>
+    <h1>{{ article.title }}</h1>
+    <h2>Published: {{ article.publish_date }}</h2>
+    <h3>By: {{ article.author }}</h3>
+    <div>
+        <p>{{ content }}</p>
+        {% for image in images %}
+        <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="Uploaded Image" height="200">
+        {% endfor %}   
+    </div>
+    <h3>Comments:</h3>
+    <ul>
+        {% for comment in comments %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

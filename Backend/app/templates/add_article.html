@@ -1,0 +1,14 @@
+<!-- add_article.html -->
+<form method="POST" action="{{ url_for('main.add_article') }}" enctype="multipart/form-data">
+    Title: <input type="text" name="title"><br>
+    Summary: <textarea name="summary"></textarea><br> 
+    User ID: <input type="text" name="user_id" value="{{ current_user.id }}" readonly><br>
+    Category: <select name="category_id">
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select><br>
+    <label for="article_image">Upload Image:</label>
+    <input type="file" name="article_image" id="article_image" accept="image/*"><br>
+    <button type="submit">Add Article</button>
+</form>
