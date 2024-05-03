@@ -38,9 +38,6 @@ def add_user():
 
         return jsonify({'message': 'User registered successfully'}), 201
 
-    return render_template('add_user.html')  
-
-
 @main.route('/users')
 def list_users():
     users = User.query.all()
@@ -50,11 +47,11 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
 @main.route('/add_article', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def add_article():
     if request.method == 'POST':
         title = request.form.get('title')
-        user_id = current_user.id 
+        user_id = request.form.get('user_id')
         category_id = request.form.get('category_id')
 
         # Storing content and other unstructured data in MongoDB
@@ -140,7 +137,7 @@ def list_articles():
     return jsonify(articles_data) 
 
 @main.route('/add_comment/<article_id>', methods=['POST'])
-@login_required
+#@login_required
 def add_comment(article_id):
     content = request.json.get('content')
     article = Article.query.get(article_id)

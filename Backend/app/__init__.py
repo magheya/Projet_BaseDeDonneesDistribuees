@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 import os
 from flask_login import LoginManager
 from flask_cors import CORS
-
+from flask_bcrypt import Bcrypt
+from flask_session import Session
 
 db = SQLAlchemy()  # Import and initialize db here
 mongo = PyMongo()
@@ -21,9 +22,10 @@ def load_user(user_id):
 load_dotenv()  # Load environment variables
 
 def create_app():
-    app = Flask(__name__, static_folder='D:/Maria Boussenah/2CS/BDDD/PROJET/Backend/static')
+    app = Flask(__name__)
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
     CORS(app)
+    bcrypt = Bcrypt(app)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Gets the directory where the script runs
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
 
