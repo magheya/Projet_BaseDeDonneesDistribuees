@@ -22,6 +22,7 @@ load_dotenv()  # Load environment variables
 
 def create_app():
     app = Flask(__name__, static_folder='D:/Maria Boussenah/2CS/BDDD/PROJET/Backend/static')
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
     CORS(app)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Gets the directory where the script runs
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')

@@ -19,19 +19,24 @@ def home():
 def show_add_user_form():
     return render_template('add_user.html')
 
-@main.route('/add_user', methods=['GET', 'POST'])
+@main.route('/signup', methods=['GET', 'POST'])
 def add_user():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')  
+        data = request.get_json()
+        username = data['username']
+        email = data['email']
+        password = data['password']  
         password_hash = generate_password_hash(password)
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return jsonify({'error': 'User with this email already exists'}), 400
 
         new_user = User(username=username, email=email, password_hash=password_hash)
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('main.list_users'))
+        return jsonify({'message': 'User registered successfully'}), 201
 
     return render_template('add_user.html')  
 
@@ -110,18 +115,29 @@ def article_content(article_id):
 
 @main.route('/articles', methods=['GET'])
 def list_articles():
+    articles_data = []
     articles = Article.query.all()
     for article in articles:
+        article_info = {
+            "id": article.id,
+            "title": article.title,
+            "publish_date": article.publish_date,
+            "user_id": article.user_id,
+            "category_id": article.category_id,
+            "summary": None,
+            "comments": [],
+            "images": []
+         }
         if article.content_mongodb_id:
             content = mongo.db.articles.find_one({"_id": ObjectId(article.content_mongodb_id)})
-            if content and "summary" in content:
-                article.summary_mongodb = content["summary"] 
-            else:
-                article.summary_mongodb = None  
-        else:
-            article.summary_mongodb = None 
+            if content:
+                article_info["summary"] = content.get("summary")
+                article_info["comments"] = content.get("comments")
+                article_info["images"] = content.get("images")
+        
+        articles_data.append(article_info)
 
-    return render_template('articles.html', articles=articles)
+    return jsonify(articles_data) 
 
 @main.route('/add_comment/<article_id>', methods=['POST'])
 @login_required

@@ -1,25 +1,26 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user, login_required
+import logging
 from .models import User
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    logging.info("Login request received")
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        data = request.get_json()  # Get data as JSON
+        logging.info(f"Data received: {data}")
+        username = data.get('username')
+        password = data.get('password')
         user = User.query.filter_by(username=username).first()
 
-        if user : 
-            print(f"Stored hash: {user.password_hash}")
-            print(check_password_hash(user.password_hash, password))
-            if check_password_hash(user.password_hash, password)==False:
-                login_user(user)
-                return redirect(url_for('main.home'))
+        if user and check_password_hash(user.password_hash, password) == False:
+            login_user(user)
+            return jsonify({'message': 'Logged in successfully'}), 200
         else:
-            flash('Invalid username or password')
+            return jsonify({'error': 'Invalid username or password'}), 401
     return render_template('login.html')
 
 @auth.route('/logout')
