@@ -1,36 +1,75 @@
-import pymongo
-
+import json
+import os
 import mysql.connector
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from bson import json_util
 
-# Connect to MongoDB
-mongo_client = pymongo.MongoClient('mongodb://localhost:27017')
-mongo_db = mongo_client['non_relational_db']
-mongo_collection = mongo_db['articles']
 
-# Connect to MySQL
-mysql_connection = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='maria1313',
-    database='relation_db'
+load_dotenv()
+ #mongodb connection
+mongo_db_host = os.getenv('mongohost')
+mongo_db_port = os.getenv('mongoport')
+mongo_db_name = os.getenv('mongodb')
+mongo_db_collection = os.getenv('mongocollection')
+print(mongo_db_host)
+print(mongo_db_port)
+print(mongo_db_name)
+print(mongo_db_collection)
+
+mongo_connection_string = f'mongodb://{mongo_db_host}:{mongo_db_port}/{mongo_db_name}'
+
+client= MongoClient(mongo_connection_string)
+
+db = client[mongo_db_name]
+mongo_collection = db[mongo_db_collection]
+
+with open('data.json', 'w') as f:
+    data = list(mongo_collection.find())
+    json.dump(data, f, default=json_util.default)
+    print(data)
+
+#mysql connection
+mysql_host = os.getenv('host')
+mysql_user = os.getenv('user')
+mysql_password = os.getenv('password')
+mysql_db = os.getenv('database')
+
+mysql_conn = mysql.connector.connect(
+    host=mysql_host,
+    user=mysql_user,
+    password=mysql_password,
+    database=mysql_db
 )
-mysql_cursor = mysql_connection.cursor()
 
-# Fetch data from MongoDB
-mongo_data = mongo_collection.find()
+mysql_cursor = mysql_conn.cursor()
 
-# Iterate over MongoDB data and insert into MySQL
-for document in mongo_data:
-    # Extract relevant fields from the MongoDB document
-    field1 = document['field1']
-    field2 = document['field2']
-    # ...
+# Creating a separate table in MySQL to store migrated data from MongoDB
+mysql_cursor.execute("""
+    CREATE TABLE IF NOT EXISTS mongodb_data (
+        oid VARCHAR(255),
+        summary TEXT,
+        comments TEXT,
+        images VARCHAR(255)
+    )
+""")
 
-    # Insert data into MySQL
-    mysql_cursor.execute("INSERT INTO your_mysql_table (field1, field2) VALUES (%s, %s)", (field1, field2))
-    mysql_connection.commit()
+with open('data.json', 'r') as f:
+    data = json.load(f)
 
-# Close connections
-mongo_client.close()
-mysql_cursor.close()
-mysql_connection.close()
+# Inserting data into the separate table
+for record in data:
+    mysql_cursor.execute("""
+        INSERT INTO mongodb_data (oid, summary, comments, images) 
+        VALUES (%s, %s, %s, %s);
+    """, (
+        record['_id']['$oid'], 
+        record['summary'], 
+        str(record['comments']),
+        str(record['images'])
+    ))
+
+# Committing changes and close MySQL connection
+mysql_conn.commit()
+mysql_conn.close()
+print("Data migrated successfully from MongoDB to MySQL.")
