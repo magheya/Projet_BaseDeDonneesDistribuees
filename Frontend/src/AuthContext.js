@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        const user = localStorage.getItem('currentUser');
+        const user = localStorage.getItem('currentUser'); // Retrieve user from local storage
         if (user) {
             setCurrentUser(JSON.parse(user));
         }

@@ -5,22 +5,63 @@ import './PostArticle.css';
 
 function PostArticle() {
     const [title, setTitle] = useState('');
-    const [categories, setCategories] = useState([]); // Assume categories are fetched from an API
+    const [categories, setCategories] = useState([{ id: 'new', name: 'Add New Category' }]);
     const [category, setCategory] = useState('');
+    const [newCategoryName, setNewCategoryName] = useState('');
     const [summary, setSummary] = useState('');
     const [image, setImage] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
     const navigate = useNavigate();
-
-    // Simulate fetching categories from an API
+    const checkLoggedIn = () => { // Redirect to sign-in page if user is not logged in
+        if (!localStorage.getItem('user')) {
+            navigate('/SignIn');
+        }
+    };
     useEffect(() => {
-        // Replace this with actual API call
-        setCategories([{ id: 1, name: 'Technology' }, { id: 2, name: 'Education' }]);
+        checkLoggedIn();
+    }, [navigate]);
+
+    useEffect(() => {
+        axios.get('http://localhost:5000/categories') // Fetch existing categories
+            .then(response => {
+                const existingCategories = response.data;
+                setCategories(existingCategories.concat(categories));
+            })
+            .catch(error => {
+                console.error('Failed to fetch categories', error);
+            });
     }, []);
 
-    const handleFileChange = (event) => {
+    const handleCategoryChange = (event) => { // Handle category selection
+        const selectedCategory = event.target.value; 
+        if (selectedCategory === 'new') {
+            setCategory('');
+            setNewCategoryName('');
+        } else {
+            setCategory(selectedCategory);
+        }
+    };
+
+    const addNewCategory = async () => { // Add new category
+        if (!newCategoryName.trim()) {
+            alert('Category name is required');
+            return;
+        }
+        try {
+            const response = await axios.post('http://localhost:5000/add_category', { name: newCategoryName });
+            const newCat = response.data;
+            setCategories([...categories, { id: newCat.id, name: newCat.name }]);
+            setCategory(newCat.id);
+            setNewCategoryName('');
+        } catch (error) {
+            console.error('Error adding new category:', error);
+            alert('Failed to add new category');
+        }
+    };
+
+    const handleFileChange = (event) => { // Handle file selection
         setImage(event.target.files[0]);
         setSuccessMessage(`File ${event.target.files[0].name} ready for upload.`);
     };
@@ -56,13 +97,13 @@ function PostArticle() {
 
     return (
         <div className="form-container">
-            <h2>Post a New Article</h2>
+            <h2 className='posttext'>Post a New Article</h2>
             {errorMessage && <p className="error">{errorMessage}</p>}
             {successMessage && <p className="success">{successMessage}</p>}
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <label>
                     Title:
-                    <input
+                    <input className='titleinput'
                         type="text"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
@@ -71,12 +112,17 @@ function PostArticle() {
                 </label>
                 <label>
                     Category:
-                    <select value={category} onChange={e => setCategory(e.target.value)} required>
-                        <option value="">Select a Category</option>
-                        {categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
+                    <select value={category} onChange={handleCategoryChange} required>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
                     </select>
+                    {category === '' && (
+                            <>
+                                <input type="text" value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="New category name" required />
+                                <button type="button" onClick={addNewCategory}>Add</button>
+                            </>
+                    )}
                 </label>
                 <label>
                     Summary:
@@ -88,7 +134,7 @@ function PostArticle() {
                 </label>
                 <label>
                     Upload Image:
-                    <input
+                    <input className='fileinput'
                         type="file"
                         onChange={handleFileChange}
                     />

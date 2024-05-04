@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from .models import *
 from flask import current_app as app
 from . import mongo
@@ -36,12 +36,24 @@ def add_user():
         db.session.add(new_user)
         db.session.commit()
 
-        return jsonify({'message': 'User registered successfully'}), 201
+        return jsonify({'message': 'User registered successfully', 'user': {
+                        'id': new_user.id,
+                        'username': new_user.username,
+                        'email': new_user.email
+                    }}), 201
 
 @main.route('/users')
 def list_users():
     users = User.query.all()
     return render_template('users.html', users=users)
+
+@main.route('/get_user/<user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+         return jsonify({'username': user.username, 'id': user.id})
+    else:
+        return jsonify({'error': 'User not found'}), 404
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
@@ -172,17 +184,68 @@ def get_comments(article_id):
 @main.route('/add_category', methods=['GET', 'POST'])
 def add_category():
     if request.method == 'POST':
-        name = request.form.get('name')
+        data = request.get_json()
+        new_category_name = data['name']
 
-        new_category = Category(name=name)
+        new_category = Category(name=new_category_name)
         db.session.add(new_category)
         db.session.commit()
 
-        return redirect(url_for('main.list_categories'))
-    return render_template('add_category.html')
+    return jsonify({'id': new_category.id, 'name': new_category.name}), 201
 
 @main.route('/categories')
 def list_categories():
     categories = Category.query.all()
-    return render_template('categories.html', categories=categories)
+    category_list = [{'id': cat.id, 'name': cat.name} for cat in categories]
+    return jsonify(category_list)
 
+@main.route('/userArticles/<user_id>', methods=['GET'])
+def list_user_articles(user_id):
+    articles_data = []
+    articles = Article.query.filter_by(user_id=user_id).all()
+    for article in articles:
+        article_info = {
+            "id": article.id,
+            "title": article.title,
+            "publish_date": article.publish_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "user_id": article.user_id,
+            "category_id": article.category_id,
+            "summary": None,
+            "comments": [],
+            "images": []
+        }
+        if article.content_mongodb_id:
+            content = mongo.db.articles.find_one({"_id": ObjectId(article.content_mongodb_id)})
+            if content:
+                article_info["summary"] = content.get("summary")
+                article_info["comments"] = content.get("comments", [])
+                article_info["images"] = content.get("images", [])
+        
+        articles_data.append(article_info)
+
+    return jsonify(articles_data)
+
+@main.route('/delete_article/<article_id>', methods=['DELETE'])
+@login_required
+def delete_article(article_id):
+    article = Article.query.get(article_id)
+    if article is None:
+        return jsonify({'error': 'Article not found'}), 404
+
+    if article.user_id != session['user_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    db.session.delete(article)
+    db.session.commit()
+    return jsonify({'message': 'Article deleted successfully'}), 200
+
+@main.route('/update_article/<article_id>', methods=['POST'])
+@login_required
+def update_article(article_id):
+    article = Article.query.get(article_id)
+    if article and article.user_id == session['user_id']:
+        article.title = request.json.get('title', article.title)
+        article.summary = request.json.get('summary', article.summary)
+        db.session.commit()
+        return jsonify({'message': 'Article updated successfully'}), 200
+    return jsonify({'error': 'Article not found or unauthorized'}), 404

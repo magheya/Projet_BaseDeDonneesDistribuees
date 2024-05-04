@@ -1,0 +1,63 @@
+.articleUser {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    width: 30%;
+    background-color: #f0f0f0;  
+}
+
+.articleUser img {
+    width: 100%; /* Full width of the card */
+    height: 300px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.articleUser .comments {
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.articleUser .comments li {
+    list-style-type: none;
+    border-bottom: 1px solid #eee;
+    padding: 5px 0;
+}
+
+.articleUser .comments li:last-child {
+    border-bottom: none;
+}
+
+.userbtn {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+}
+
+.btndelete {
+    background-color: #e6acac;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btnupdate {
+    background-color: #a9d0a9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}

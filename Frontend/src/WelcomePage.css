@@ -1,6 +1,6 @@
 .App {
     color: white;
-    background-color: rgb(39, 37, 37);
+    background-color: rgb(2, 6, 36);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -11,7 +11,7 @@
     display: flex;
     justify-content: center;  /* Ensures everything is centered */
     align-items: flex-start;  /* Align items at the start of the flex container */
-    padding: 20px;  /* Outer padding for better spacing from the edges of the viewport */
+    padding: 20px 0px;  /* Outer padding for better spacing from the edges of the viewport */
     min-height: 100vh;  /* Minimum height of the viewport */
     color: white;
     width: 100%;  /* Ensures the container covers full width */

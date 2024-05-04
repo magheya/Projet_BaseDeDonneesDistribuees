@@ -6,19 +6,19 @@ import SignUp from './SignUp';
 import HomePage from './HomePage';
 import Navbar from './Navbar';
 import PostArticle from './PostArticle';
-
-
+import UserArticles from './UserArticles';
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/WelcomePage" element={<WelcomePage />} />
+        <Route path="/" element={<WelcomePage />} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/HomePage" element={<HomePage />} />
         <Route path="/post-article" element={<PostArticle />} />
+        <Route path="/userArticles" element={<UserArticles />} />
       </Routes>
     </Router>
   );

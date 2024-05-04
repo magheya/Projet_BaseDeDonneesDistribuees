@@ -1,17 +1,17 @@
 body, html {
   height: 100%;
   margin: 0;
-  background-color:  rgb(39, 37, 37) /* Light gray background */
+  background-color:  rgb(2, 6, 36) /* Light gray background */
 }
 
 .auth-form {
   width: 100%;
   max-width: 500px;
-  height: 70vh;
   margin: 100px auto;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background: white;
+  border: #ccc 1px solid;
+  border-color: rgb(255, 255, 255);
+  background: transparent;
   border-radius: 8px;
   box-sizing: border-box;
 }
@@ -21,6 +21,7 @@ body, html {
   text-align: center;
   margin-top: 30px;
   margin-bottom: 50px;
+  color: white;
 }
 
 .auth-form input {
@@ -38,8 +39,8 @@ body, html {
   margin-top: 20px;
   width: 50%;
   padding: 10px;
-  background-color: black;
-  color: white;
+  background-color: ccc;
+  color: black;
   border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
@@ -49,10 +50,10 @@ body, html {
   margin-left: 120px;
   margin-top: 50px;
   font-size: 16px;
-  color: black;
+  color: white;
 }
 
 .redirectSignUp a {
   text-decoration: none;
-  color: rgb(39, 37, 37);
+  color: rgb(202, 195, 195);
 }

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 import logging
@@ -23,6 +23,7 @@ def login():
             logging.info(f"User found: {user.username}")
             if check_password_hash(user.password_hash, password):
                 login_user(user)
+                session['user_id'] = user.id
                 return jsonify({
                     'message': 'Logged in successfully',
                     'user': {

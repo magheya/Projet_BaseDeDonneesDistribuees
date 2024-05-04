@@ -3,9 +3,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';  // Make sure the path is correct
 import './Navbar.css';  // Make sure the path is correct
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Adjust path as needed
 
-function Navbar() {
-    const { currentUser, logout } = useAuth();  // Assuming logout is a method provided by useAuth
+function Navbar({ }) {
+    const { currentUser, logout } = useAuth();  
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -13,20 +14,26 @@ function Navbar() {
         try {
             // Here, handle the logout process (e.g., clear localStorage)
             localStorage.removeItem('user');
-            navigate('/signin');
+            navigate('/');
         } catch (error) {
             console.error("Failed to logout", error);
         }
     };
 
-    console.log('Current User in Navbar:', user);
+    const handleUsernameClick = () => {
+        navigate('/userArticles'); // Redirect to user articles page
+      };
 
     return (
         <nav className="navbar">
             <h2>Ta9afa</h2>
             {user ? (
                 <div className="navbar-content">
-                    <span>{user.username}</span>
+                    {user && (
+                        <span className='profile' onClick={handleUsernameClick}>
+                            <i className="fa fa-user" aria-hidden="true"></i>{user.username}</span>
+                    )}
+                    <button className='postbtn' onClick={() => navigate('/post-article')}>Post Article +</button>
                     <button className='logoutbtn' onClick={handleLogout}>Logout</button>
                 </div>
             ) : (

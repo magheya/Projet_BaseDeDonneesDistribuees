@@ -3,20 +3,29 @@ import axios from 'axios';
 import './HomePage.css';
 
 function HomePage() {
-    const [articles, setArticles] = useState([]);
+    const [articles, setArticles] = useState([]); // Initialize state with an empty array
 
     useEffect(() => {
-        fetchArticles();
+        fetchArticles(); // Fetch articles when the component mounts
     }, []);
 
     const fetchArticles = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/articles');
-            setArticles(response.data);  // Adjust according to actual response structure
+            const { data } = await axios.get('http://localhost:5000/articles'); // Fetch articles from the server
+            await fetchUsernames(data); // Fetch usernames for each article
         } catch (error) {
             console.error('Failed to fetch articles:', error);
-            setArticles([]); // Fallback to an empty array in case of error
+            setArticles([]);  // Fallback to an empty array in case of error
         }
+    };
+
+    const fetchUsernames = async (articles) => {
+        const updatedArticles = await Promise.all(articles.map(async article => {
+            const response = await axios.get(`http://localhost:5000/get_user/${article.user_id}`);
+            article.username = response.data.username;  // Add username directly to each article
+            return article;
+        }));
+        setArticles(updatedArticles);
     };
 
     const addComment = async (articleId, comment) => {
@@ -46,6 +55,7 @@ function HomePage() {
                     <h3>{article.title}</h3>
                     <p>{article.summary || 'No summary available'}</p>
                     <p>Published on: {new Date(article.publish_date).toLocaleDateString()}</p>
+                    <p>By: {article.username}</p>
                     {article.images && article.images.map((image, index) => (
                         <img key={index} src={`http://localhost:5000/static/uploads/${image}`} alt="Article" />
                     ))}
@@ -61,8 +71,10 @@ function HomePage() {
                             addComment(article.id, comment);
                             e.target.elements.comment.value = '';  // Clear input after submission
                         }}>
-                            <input name="comment" placeholder="Add a comment" />
-                            <button type="submit">Submit</button>
+                            <div className='commentsection'>
+                                <input className='addcomment' name="comment" placeholder="Add a comment" />
+                                <button className='submitbtn' type="submit">Submit</button>
+                            </div>
                         </form>
                     </div>
                 </div>

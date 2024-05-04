@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 
 db = SQLAlchemy()  # Import and initialize db here
-mongo = PyMongo()
+mongo = PyMongo()  # Import and initialize mongo here
 
 login_manager = LoginManager()
 
@@ -45,7 +45,7 @@ def create_app():
     db.init_app(app)  # Initialize db inside create_app
     mongo.init_app(app)
 
-    from app.routes import main
+    from app.routes import main 
     from app.admin import admin_bp
     from .auth import auth as auth_blueprint
 

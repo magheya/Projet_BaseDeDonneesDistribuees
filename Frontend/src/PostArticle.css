@@ -1,17 +1,10 @@
-/* src/components/PostArticle.css */
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f9;
-}
-
 .form-container {
+    margin: 50px auto;
     width: 50%;
     padding: 20px;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: transparent;
+    border: #ccc 1px solid;
+    box-shadow: 0 4px 8px rgba(198, 195, 195, 0.1);
     border-radius: 8px;
 }
 
@@ -19,17 +12,20 @@
     margin-bottom: 15px;
 }
 
+.posttext {
+    color: white;
+}
+
 label {
     display: block;
     margin-bottom: 5px;
     font-size: 16px;
-    color: #333;
+    color: white;
 }
 
-input[type="text"],
-input[type="file"],
+
 select,
-textarea {
+textarea, .fileinput, .titleinput {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
@@ -40,7 +36,7 @@ textarea {
 .postbtn {
     width: 100%;
     padding: 10px;
-    background-color: #202225;
+    background-color: #5e6877;
     color: white;
     border: none;
     border-radius: 4px;
