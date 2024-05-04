@@ -1,0 +1,58 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  background-color:  rgb(39, 37, 37) /* Light gray background */
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 500px;
+  height: 70vh;
+  margin: 100px auto;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.auth-form h2 {
+  align-self: flex-start;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.auth-form input {
+  align-self: center;
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-left: 25px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.auth-form button {
+  margin-left: 120px;
+  margin-top: 20px;
+  width: 50%;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.redirectSignUp {
+  margin-left: 120px;
+  margin-top: 50px;
+  font-size: 16px;
+  color: black;
+}
+
+.redirectSignUp a {
+  text-decoration: none;
+  color: rgb(39, 37, 37);
+}

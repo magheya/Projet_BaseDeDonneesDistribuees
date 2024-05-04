@@ -1,0 +1,57 @@
+/* HomePage.css */
+.card-container {
+    display: flex;
+    flex-direction: column; /* Changes the flex layout to stack vertically */
+    align-items: center; /* Centers cards horizontally */
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 80%; /* Adjust width to fit content area or preference */
+    max-width: 600px; /* Maximum width for better readability */
+    margin: 10px 0; /* Vertical spacing between cards */
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+    color: #333;
+}
+
+.card p, .card ul {
+    color: #666;
+    font-size: 14px;
+}
+
+.card img {
+    width: 100%; /* Full width of the card */
+    height: 300px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.card .comments {
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.card .comments li {
+    list-style-type: none;
+    border-bottom: 1px solid #eee;
+    padding: 5px 0;
+}
+
+.card .comments li:last-child {
+    border-bottom: none;
+}

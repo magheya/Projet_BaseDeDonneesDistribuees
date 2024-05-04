@@ -1,0 +1,57 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    border-bottom: 1px solid white;
+    width: 100%;
+  }
+  
+  .navbar h2 {
+    margin: 0;
+    font-size: 30px;
+    margin-left: 20px;
+  }
+  
+  .nav-buttons button {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 8px 16px;
+    border: 1px solid white;
+    cursor: pointer;
+    font-size: medium;
+    margin-right: 20px;
+  }
+  
+  .signupbtn {
+    background-color: white;
+    color: black;
+  }
+  
+  .signinbtn {
+    background-color: transparent;
+    color: white;
+  }
+
+  .logoutbtn {
+    background-color: white;
+    color: black;
+    border-radius: 20px;
+    border: 1px solid white;
+    cursor: pointer;
+    font-size: medium;
+    padding: 8px 16px;
+  }
+
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-content span {
+    font-size: 18px;
+    color: #f1eaea;
+}

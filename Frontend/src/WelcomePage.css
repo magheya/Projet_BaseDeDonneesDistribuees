@@ -1,0 +1,64 @@
+.App {
+    color: white;
+    background-color: rgb(39, 37, 37);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: center;  /* Ensures everything is centered */
+    align-items: flex-start;  /* Align items at the start of the flex container */
+    padding: 20px;  /* Outer padding for better spacing from the edges of the viewport */
+    min-height: 100vh;  /* Minimum height of the viewport */
+    color: white;
+    width: 100%;  /* Ensures the container covers full width */
+  }
+  
+  .story, .actions {
+    flex: 1;  /* Makes each side take up equal space */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;  /* Inner padding for content within each column */
+  }
+  
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    padding-left: 25px;
+  }
+  
+  .paragraph {
+    font-size: large ;
+    padding-left: 25px;
+  }
+  
+  .actions {
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px; /* Space between text and buttons */
+  }
+  
+  .btnnav {
+    padding: 20px;
+    font-size: 2rem;
+    color: white;
+    background-color: transparent;
+    border: 2px solid white;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;  /* Makes the button expand to fill the container */
+    margin-bottom: 1rem;  /* Space between buttons */
+  }
+  
+  .btnnav:hover {
+    background-color: white;
+    color: black;
+  }
+  
